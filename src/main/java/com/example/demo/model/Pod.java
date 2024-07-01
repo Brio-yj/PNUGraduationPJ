@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Pod {
     private String name;
-    private String containerName;
-    private String image;
+    private String status;
+    private String namespace;
 }
