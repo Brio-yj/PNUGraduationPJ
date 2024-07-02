@@ -44,7 +44,6 @@ public class RestTemplateConfig {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         httpClientBuilder.setConnectionManager(connectionManager);
         return httpClientBuilder.build();
-
     }
     @Bean
     HttpComponentsClientHttpRequestFactory factory(HttpClient httpClient) {
