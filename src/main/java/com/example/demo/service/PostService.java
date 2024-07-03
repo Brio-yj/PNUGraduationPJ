@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostUtil postUtil;
-    public ResponseEntity createOrUpdatePod(Map<String, Object> podSpec) {
-        return postUtil.applyPod(podSpec);
+    public ResponseEntity createOrUpdatePod(Map<String, Object> metadata) {
+        return postUtil.applyPod(metadata);
     }
 }
