@@ -2,11 +2,15 @@ package com.example.msaauth.jwt;
 
 
 import com.example.msaauth.dto.TokenDto;
+import com.example.msaauth.service.AuthService;
 import com.example.msaauth.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.patterns.IToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,6 +37,8 @@ public class TokenProvider {
 
     private final Key key;
     private final CustomUserDetailsService customUserDetailsService;
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
     public TokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -114,5 +120,21 @@ public class TokenProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
+    }
+
+    public Authentication getAuthenticationFromRefreshToken(String refreshToken) {
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+
+        Claims claims = parseClaims(refreshToken);
+
+        logger.info("Refresh 토큰의 클레임 정보: {}", claims.toString());
+
+        Long memberId = Long.parseLong(claims.getSubject());
+
+        logger.info("사용자의 멤버 아이디: {}", memberId);
+
+        UserDetails userDetails = customUserDetailsService.loadUserByMemberId(memberId);
+
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }
