@@ -87,7 +87,7 @@ public class TokenProvider {
 
         Long memberId = claims.get(MEMBER_ID_KEY, Long.class);
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(memberId.toString());
+        UserDetails userDetails = customUserDetailsService.loadUserByMemberId(memberId);
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
