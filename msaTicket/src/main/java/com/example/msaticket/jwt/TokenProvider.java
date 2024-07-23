@@ -1,4 +1,4 @@
-package com.example.msasource.jwt;
+package com.example.msaticket.jwt;
 
 
 import io.jsonwebtoken.*;
@@ -17,18 +17,21 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class TokenProvider {
+
     private static final String AUTHORITIES_KEY = "auth";
     private final Key key;
+
+    //key 초기화
     public TokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
+
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
 
@@ -46,6 +49,7 @@ public class TokenProvider {
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -61,6 +65,7 @@ public class TokenProvider {
         }
         return false;
     }
+
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
@@ -68,19 +73,4 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
-    public Long getMemberIdFromToken(String accessToken) {
-        Claims claims = parseClaims(accessToken);
-        return Long.parseLong(claims.getSubject());
-    }
-    public String getEmailFromToken(String accessToken) {
-        Claims claims = parseClaims(accessToken);
-        return claims.get("memberEmail", String.class);
-    }
-    public String getAuthorityFromToken(String accessToken) {
-        Claims claims = parseClaims(accessToken);
-        return claims.get("memberAuthority", String.class);
-    }
-
-
-
 }

@@ -1,4 +1,4 @@
-package com.example.msasource.dto;
+package com.example.msaticket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

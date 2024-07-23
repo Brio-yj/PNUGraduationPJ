@@ -1,4 +1,4 @@
-package com.example.msaauth.entity;
+package com.example.msaticket.entity;
 
 public enum Authority {
     CLIENT,PROVIDER

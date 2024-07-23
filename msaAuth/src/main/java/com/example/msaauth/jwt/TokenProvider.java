@@ -2,6 +2,8 @@ package com.example.msaauth.jwt;
 
 
 import com.example.msaauth.dto.TokenDto;
+import com.example.msaauth.entity.Member;
+import com.example.msaauth.repository.MemberRepository;
 import com.example.msaauth.service.AuthService;
 import com.example.msaauth.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
@@ -35,14 +37,17 @@ public class TokenProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
     private static final String MEMBER_ID_KEY = "memberId";
 
+
     private final Key key;
+    private final  MemberRepository memberRepository;
     private final CustomUserDetailsService customUserDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService) {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey, CustomUserDetailsService customUserDetailsService, MemberRepository memberRepository) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.memberRepository = memberRepository;
         this.customUserDetailsService=customUserDetailsService;
     }
 
@@ -57,12 +62,17 @@ public class TokenProvider {
         User user = (User) authentication.getPrincipal();
         Long memberId = Long.parseLong(user.getUsername()); // Username에 id 값이 있음
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       // payload "sub": "name"
-                .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
-                .claim(MEMBER_ID_KEY, memberId)                 // payload "memberId": "123"
-                .setExpiration(accessTokenExpiresIn)        // payload "exp": 151621022 (ex)
-                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .setSubject(authentication.getName())                   // payload "sub": "name"
+                .claim(AUTHORITIES_KEY, authorities)                    // payload "auth": "ROLE_USER"
+                .claim(MEMBER_ID_KEY, memberId)                         // payload "memberId": "123"
+                .claim("memberEmail", member.getEmail())          // payload "memberEmail": "user@example.com"
+                .claim("memberAuthority", member.getAuthority().name()) // payload "memberAuthority": "CLIENT"
+                .setExpiration(accessTokenExpiresIn)                    // payload "exp": 151621022 (ex)
+                .signWith(key, SignatureAlgorithm.HS512)                // header "alg": "HS512"
                 .compact();
 
         String refreshToken = Jwts.builder()

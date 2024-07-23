@@ -1,7 +1,8 @@
-package com.example.msasource.service;
+package com.example.msaticket.service;
 
-import com.example.msasource.entity.Member;
-import com.example.msasource.repository.MemberRepository;
+
+import com.example.msaticket.entity.Member;
+import com.example.msaticket.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

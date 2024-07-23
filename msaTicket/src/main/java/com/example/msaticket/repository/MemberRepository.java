@@ -1,6 +1,6 @@
-package com.example.msasource.repository;
+package com.example.msaticket.repository;
 
-import com.example.msasource.entity.Member;
+import com.example.msaticket.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,13 +1,17 @@
-package com.example.msaauth.entity;
+package com.example.msaticket.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 
 @Entity
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +21,7 @@ public class Member {
     private String email;
 
     private String password;
-    @Column(name="username")
+    @Column(name = "username")
     private String userName;
 
     @Enumerated(EnumType.STRING)

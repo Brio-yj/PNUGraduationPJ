@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-@Entity
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,10 +14,14 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
-    private String password;
-
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Authority authority;
+
+    public enum Authority {
+        CLIENT, PROVIDER
+    }
 }

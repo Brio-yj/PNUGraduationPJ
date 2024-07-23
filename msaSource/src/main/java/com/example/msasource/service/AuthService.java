@@ -13,17 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final TokenProvider tokenProvider;
-    private final CustomUserDetailsService customUserDetailsService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MemberResponseDto getUserInfoFromToken(String token) {
         if (!tokenProvider.validateToken(token)) {
             throw new RuntimeException("Invalid Token");
         }
 
-        Authentication authentication = tokenProvider.getAuthentication(token);
-        Long memberId = Long.parseLong(authentication.getName());
-        Member member = customUserDetailsService.loadUserByMemberId(memberId);
-        return MemberResponseDto.of(member);
+        Long memberId = tokenProvider.getMemberIdFromToken(token);
+        String email = tokenProvider.getEmailFromToken(token);
+        String authority = tokenProvider.getAuthorityFromToken(token);
+
+        return MemberResponseDto.of(memberId, email, authority);
     }
 }
