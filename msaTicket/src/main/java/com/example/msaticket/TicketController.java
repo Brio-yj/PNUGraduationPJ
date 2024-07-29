@@ -29,6 +29,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTickets(email));
     }
 
+    //티켓 구입할때 buyeremail없다
     @PostMapping
     public ResponseEntity<Ticket> buyTicket(@RequestBody Ticket ticket, @RequestHeader("Authorization") String bearerToken) {
         String token = resolveToken(bearerToken);
