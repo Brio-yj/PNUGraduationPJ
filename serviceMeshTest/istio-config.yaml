@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: app1
+spec:
+  hosts:
+  - app1
+  http:
+  - route:
+    - destination:
+        host: app1
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: app1
+spec:
+  host: app1
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: app2
+spec:
+  hosts:
+  - app2
+  http:
+  - route:
+    - destination:
+        host: app2
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: app2
+spec:
+  host: app2
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
